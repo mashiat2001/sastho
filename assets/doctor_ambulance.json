@@ -1,170 +1,235 @@
 {
-  "moulvibazar": {
-    "doctors": [
+  "kamalbazar": {
+    "hospitals": [
       {
-        "name": "ড. সুজন ঘোষ",
-        "department": "জুনিয়র কনসালট্যান্ট (মেডিসিন)",
-        "contact": "01712-603263",
-        "latitude": 24.5034,
-        "longitude": 91.7301
+        "name": "Rabeya Banu general hospial",
+        "address": "Kamalbazar,Sylhet",
+        "contact": "not available",
+        "latitude": 24.9355,
+        "longitude": 91.8679
       },
       {
-        "name": "ড. রাজিব দে",
-        "department": "জুনিয়র কনসালট্যান্ট (পেডিয়াট্রিকস)",
-        "contact": "01720-636648",
-        "latitude": 24.5035,
-        "longitude": 91.7302
+        "name": "Care Hospital, Sylhet",
+        "address": "Sylhet",
+        "contact": "01757-252808",
+        "latitude": 24.9355,
+        "longitude": 91.8679
       },
       {
-        "name": "ড. সাদেকুল আলম",
-        "department": "জুনিয়র কনসালট্যান্ট (সার্জারি)",
-        "contact": "01711-925541",
-        "latitude": 24.5036,
-        "longitude": 91.7303
+        "name": "Oasis Hospital, Sylhet",
+        "address": "Subhanighat, Sylhet",
+        "contact": "01763-990044",
+        "latitude": 24.9356,
+        "longitude": 91.8680
       },
       {
-        "name": "ড. আহমেদ ফরহান জামান",
-        "department": "অ্যাসিস্ট্যান্ট মেডিকেল অফিসার",
-        "contact": "01786-682350",
-        "latitude": 24.5040,
-        "longitude": 91.7305
+        "name": "Queen's Hospital, Sylhet",
+        "address": "Shubidbazar, Sylhet",
+        "contact": "01730-700898",
+        "latitude": 24.9357,
+        "longitude": 91.8681
       }
     ],
     "ambulances": [
       {
-        "name": "সিলেট অ্যাম্বুলেন্স সার্ভিস",
+        "name": "Sylhet City Ambulance Service",
         "phone_number": "01721-520585",
-        "location": "নিউ মেডিকেল কলেজ রোড, সিলেট",
-        "latitude": 24.8949,
+        "location": "New Medical College Road, Sylhet",
+        "latitude": 24.9357,
         "longitude": 91.8681
-      },
-      {
-        "name": "সিলেট অ্যাম্বুলেন্স সার্ভিস",
-        "phone_number": "0821-721103",
-        "location": "সিটি সেন্টার, সিলেট",
-        "latitude": 24.8999,
-        "longitude": 91.8720
       }
+
+
+
     ]
   },
-  "sylhet_sadar": {
-    "doctors": [
+  "sylhet": {
+    "hospitals": [
       {
-        "name": "ড. কাজী মাইনুল ইসলাম",
-        "department": "মেডিসিন",
-        "contact": "09610-006940",
+        "name": "MAG Osmani Medical College Hospital",
+        "address": "Kajalshsh Road, Sylhet",
+        "contact": "0821-715337",
         "latitude": 24.8949,
         "longitude": 91.8681
       },
       {
-        "name": "লেফটেন্যান্ট কর্নেল ড. মোহাম্মদ সাইফুর বর্জিব",
-        "department": "মেডিসিন (ডায়াবেটিস, রিউমেটিজম, অ্যাস্থমা, হরমোন ডিসঅর্ডার)",
-        "contact": "09610-006940",
+        "name": "Parkview Hospital Sylhet",
+        "address": "Sylhet",
+        "contact": "0821-710551",
         "latitude": 24.8950,
         "longitude": 91.8682
       },
       {
-        "name": "ড. ইকবাল আহমেদ চৌধুরী",
-        "department": "মেডিসিন",
-        "contact": "01712-196280",
+        "name": "Medinova Medical Services Ltd.",
+        "address": "Sylhet",
+        "contact": "0821-715191",
         "latitude": 24.8951,
         "longitude": 91.8683
+      },
+      {
+        "name": "Popular Medical Centre (Subhanighat)",
+        "address": "Subhanighat, Sylhet",
+        "contact": "09638-009006",
+        "latitude": 24.8952,
+        "longitude": 91.8684
+      },
+      {
+        "name": "Ibn Sina Hospital, Sylhet Ltd.",
+        "address": "Sylhet",
+        "contact": "09610-009640",
+        "latitude": 24.8953,
+        "longitude": 91.8685
+      },
+      {
+        "name": "Sylhet Women's Medical College Hospital",
+        "address": "Sylhet",
+        "contact": "0821-720200",
+        "latitude": 24.8954,
+        "longitude": 91.8686
       }
     ],
     "ambulances": [
       {
-        "name": "সিলেট অ্যাম্বুলেন্স সার্ভিস",
+        "name": "Sylhet City Ambulance Service",
         "phone_number": "01721-520585",
-        "location": "নিউ মেডিকেল কলেজ রোড, সিলেট",
+        "location": "New Medical College Road, Sylhet",
         "latitude": 24.8949,
         "longitude": 91.8681
       },
       {
-        "name": "সিলেট অ্যাম্বুলেন্স সার্ভিস",
+        "name": "Emergency Ambulance Sylhet",
         "phone_number": "0821-721103",
-        "location": "সিটি সেন্টার, সিলেট",
+        "location": "City Center, Sylhet",
         "latitude": 24.8999,
         "longitude": 91.8720
       }
     ]
   },
-  "sunamganj": {
-    "doctors": [
+  "moulvibazar": {
+    "hospitals": [
       {
-        "name": "ড. গৌতম রায়",
-        "department": "মেডিসিন",
-        "contact": "01718-888547",
+        "name": "250-bed General Hospital, Moulvibazar",
+        "address": "Sreemangal Road, Moulvibazar Sadar",
+        "contact": "0861-62040",
+        "latitude": 24.5034,
+        "longitude": 91.7301
+      },
+      {
+        "name": "Moulvibazar Poly Clinic",
+        "address": "KB Alauddin Road, Muslim Quarter, Moulvibazar Sadar",
+        "contact": "01580-333124",
+        "latitude": 24.5035,
+        "longitude": 91.7302
+      },
+      {
+        "name": "BNSB Eye Hospital",
+        "address": "Matarkapon, Shamshernagar Road, Moulvibazar",
+        "contact": "0861-52670",
+        "latitude": 24.5036,
+        "longitude": 91.7303
+      }
+    ],
+    "ambulances": [
+      {
+        "name": "Moulvibazar Ambulance Service",
+        "phone_number": "01721-520585",
+        "location": "Moulvibazar Sadar",
+        "latitude": 24.5034,
+        "longitude": 91.7301
+      }
+    ]
+  },
+  "sunamganj": {
+    "hospitals": [
+      {
+        "name": "250-bed District Sadar Hospital, Sunamganj",
+        "address": "Sunamganj Sadar",
+        "contact": "0871-55333",
         "latitude": 25.0600,
         "longitude": 91.4085
       },
       {
-        "name": "ড. মলেকা বাহার লিলি",
-        "department": "গাইনোকোলজি",
-        "contact": "01552-577858",
+        "name": "Sunamganj Civil Surgeon Office",
+        "address": "Sunamganj Sadar",
+        "contact": "0871-55418",
         "latitude": 25.0601,
         "longitude": 91.4086
       },
       {
-        "name": "ড. মোহাম্মদ সামিলুল হক",
-        "department": "মেডিসিন",
-        "contact": "01712-009191",
+        "name": "Sancred Community Health Service Center",
+        "address": "Baitul Aman Housing, Mohammadpur, Dhaka",
+        "contact": "01847-067730",
         "latitude": 25.0602,
         "longitude": 91.4087
       }
     ],
     "ambulances": [
       {
-        "name": "সুনামগঞ্জ অ্যাম্বুলেন্স সার্ভিস",
+        "name": "Sunamganj Ambulance Service",
         "phone_number": "01713-374419",
-        "location": "সুনামগঞ্জ সিটি",
+        "location": "Sunamganj City",
         "latitude": 25.0603,
         "longitude": 91.4088
       },
       {
-        "name": "শান্তি গঞ্জ অ্যাম্বুলেন্স",
+        "name": "Shanti Ganj Ambulance",
         "phone_number": "01712-123456",
-        "location": "শান্তি গঞ্জ, সুনামগঞ্জ",
+        "location": "Shanti Ganj, Sunamganj",
         "latitude": 25.0604,
         "longitude": 91.4089
       }
     ]
   },
   "habiganj": {
-    "doctors": [
+    "hospitals": [
       {
-        "name": "ড. প্রণব কান্তি দাশ",
-        "department": "মেডিসিন",
-        "contact": "01712-717762",
+        "name": "Sheikh Hasina Medical College, Habiganj",
+        "address": "Habiganj Sadar",
+        "contact": "01724-603359",
         "latitude": 24.7689,
         "longitude": 91.4501
       },
       {
-        "name": "ড. বিনেন্দু ভৌমিক",
-        "department": "হাসপাতাল প্রশাসন",
-        "contact": "01313-847974",
+        "name": "Fayez General Hospital",
+        "address": "New Bus Terminal Road, Habiganj Sadar",
+        "contact": "01717-786500",
         "latitude": 24.7690,
         "longitude": 91.4502
       },
       {
-        "name": "ড. এ. এইচ. এম. এনামুল হক",
-        "department": "ইএনটি",
-        "contact": "01717-687211",
+        "name": "Chander Hashi Hospital Limited",
+        "address": "Old Hospital Road, Habiganj Sadar",
+        "contact": "01767-100300",
         "latitude": 24.7691,
         "longitude": 91.4503
+      },
+      {
+        "name": "Surjomukhi General Hospital Unit-1",
+        "address": "New Municipality Road, Habiganj Sadar",
+        "contact": "01754-627272",
+        "latitude": 24.7692,
+        "longitude": 91.4504
+      },
+      {
+        "name": "Habiganj Upazila Health Complex",
+        "address": "Habiganj Sadar",
+        "contact": "01724-799143",
+        "latitude": 24.7693,
+        "longitude": 91.4505
       }
     ],
     "ambulances": [
       {
-        "name": "হবিগঞ্জ জেলা ফায়ার সার্ভিস (অ্যাম্বুলেন্স)",
+        "name": "Habiganj District Fire Service (Ambulance)",
         "phone_number": "0831-61111",
-        "location": "হবিগঞ্জ",
+        "location": "Habiganj",
         "latitude": 24.7689,
         "longitude": 91.4501
       },
       {
-        "name": "মাধবপুর উপজেলা অ্যাম্বুলেন্স",
+        "name": "Madhabpur Upazila Ambulance",
         "phone_number": "08327-56100",
-        "location": "মাধবপুর, হবিগঞ্জ",
+        "location": "Madhabpur, Habiganj",
         "latitude": 24.7690,
         "longitude": 91.4502
       }

@@ -37,7 +37,7 @@ class MainPregnancyPage extends StatelessWidget {
                     title: 'প্রসব প্রস্তুতি',
                     icon: Icons.access_alarm,
                     onTap: () {
-                      Navigator.pushNamed(context, '/labor_preparation');
+                      Navigator.pushNamed(context, '/labor');
                     },
                   ),
                   _FeatureCard(
@@ -51,7 +51,7 @@ class MainPregnancyPage extends StatelessWidget {
                     title: 'গর্ভাবস্থার মিথ বা সত্য',
                     icon: Icons.help_outline,
                     onTap: () {
-                      Navigator.pushNamed(context, '/pregnancy_faq');
+                      Navigator.pushNamed(context, '/faq');
                     },
                   ),
                 ],

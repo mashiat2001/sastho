@@ -1,3 +1,20 @@
+// Top-level build file
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath("com.android.tools.build:gradle:8.1.4")
+        classpath("com.google.gms:google-services:4.4.0")  // Add this line
+        // Keep other existing classpaths if you have them
+    }
+}
+
+
+
+
+
 allprojects {
     repositories {
         google()

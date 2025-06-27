@@ -1,72 +1,121 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:health_buddy/faq.dart';
+import 'package:health_buddy/health_journal.dart';
+import 'package:health_buddy/labor.dart';
+import 'package:health_buddy/week_tracker.dart';
+import 'package:health_buddy/weight_tracker.dart';
 
-// Import your custom pages here
-import 'homepage.dart';  // Your custom HomePage
-import 'loginpage.dart';  // Your custom LoginPage
-import 'dashboard.dart';  // Your custom Dashboard Page
-import 'first_aid.dart';  // Import the First Aid Page (Prathimic Chikitsa)
-import 'pregnancy_page.dart';  // Import the Pregnancy Page (Main Pregnancy Page)
-import 'weight_tracker.dart'; // Weight Tracker Page
-import 'week_tracker.dart';   // Week Tracker Page
-import 'faq.dart';  // FAQ Page (Myths and Facts)
-import 'labor.dart'; // Labor Preparation Page
-import 'health_journal.dart'; // Health Journal Page
-import 'emergency.dart'; // Emergency (Location Tracker Page)
-import 'bmi_page.dart';  // BMI Page
-import 'medication.dart'; // Medication Reminder Page
+// Import all pages
+import 'homepage.dart';
+import 'login.dart';
+import 'dashboard.dart';
+import 'first_aid.dart';
+import 'pregnancy_page.dart';
+import 'emergency.dart';
+import 'bmi_page.dart';
+import 'medication.dart';
+import 'registration.dart';
+import 'profilepage.dart';
+import 'verification.dart';
+import 'mental_health_page.dart';
+import 'mental_health_checkin.dart';
+import 'breathing.dart';
+import 'mood_journal.dart';
+import 'tips.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Awesome Notifications
+  // Initialize Firebase
+  await Firebase.initializeApp();
+
+  // Configure Database
+  FirebaseDatabase.instance.setPersistenceEnabled(true);
+  FirebaseDatabase.instance.setPersistenceCacheSizeBytes(10000000);
+
+  // Initialize Notifications
   await AwesomeNotifications().initialize(
-    'resource://drawable/res_app_icon', // Default icon for notifications
+    null,
     [
       NotificationChannel(
-        channelKey: 'scheduled',  // Make sure the channel key is 'scheduled'
-        channelName: 'Medication Notifications',
-        channelDescription: 'Channel for medication reminder notifications',
+        channelKey: 'scheduled',
+        channelName: 'Basic Notifications',
+        channelDescription: 'Notification channel',
         defaultColor: Colors.blue,
         ledColor: Colors.white,
-        importance: NotificationImportance.High,
-        channelShowBadge: true,
-        playSound: true,
-        enableVibration: true,
       ),
     ],
   );
 
-  runApp(MyApp());
+  runApp(HealthBuddyApp());
 }
 
-class MyApp extends StatelessWidget {
+class HealthBuddyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'স্বাস্থ্য বন্ধু',  // App title in Bangla
+      title: 'স্বাস্থ্য বন্ধু',
       theme: ThemeData(
-        primaryColor: Colors.blue,
-        scaffoldBackgroundColor: Colors.white,  // White background
-        fontFamily: 'SiyamRupali',  // Use SiyamRupali font globally
+        primarySwatch: Colors.blue,
+        fontFamily: 'SiyamRupali',
       ),
-      initialRoute: '/',  // Set the initial route
+      home: AuthWrapper(),
       routes: {
-        '/': (context) => HomePage(),
+        '/home': (context) => HomePage(),
         '/login': (context) => LoginPage(),
-        '/dashboard': (context) => Dashboard(guestMode: true),
-        '/firstAid': (context) => FirstAidPage(),
+        '/registration': (context) => RegistrationPage(),
+        '/dashboard': (context) => Dashboard(guestMode: false),
+        '/profile': (context) => ProfilePage(),
+        '/verification': (context) => VerificationPage(),
+        '/first_aid': (context) => FirstAidPage(),
         '/pregnancy_page': (context) => MainPregnancyPage(),
-        '/week_tracker': (context) => WeekTrackerPage(),
-        '/weight_tracker': (context) => WeightTrackerPage(),
-        '/pregnancy_faq': (context) => PregnancyFAQPage(),
-        '/labor_preparation': (context) => LaborPreparationPage(),
-        '/health_journal': (context) => HealthJournalPage(),
         '/emergency': (context) => LocationTrackerPage(),
         '/bmi_page': (context) => BmiDietPage(),
-        '/medication': (context) => MedicationReminderPage(),  // Medication reminder route
+        '/medication': (context) => MedicationReminderPage(),
+        '/mental_health_page': (context) => MentalHealthSection(),
+        '/mental_health_checkin': (context) => MentalHealthCheckIn(),
+        '/breathing': (context) => BreathingExercise(),
+        '/mood_journal': (context) => MentalHealthKnowledge(),
+        '/tips': (context) => MentalHealthTips(),
+        '/weight_tracker':(context) => WeightTrackerPage(),
+        '/faq':(context) => PregnancyFAQPage(),
+        '/week_tracker': (context) => WeekTrackerPage(),
+        '/health_journal':(context) => HealthJournalPage(),
+        '/labor':(context) =>  LaborPreparationPage(),
+
+      },
+    );
+  }
+}
+
+class AuthWrapper extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<User?>( // Listen to Firebase Authentication stream
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.active) {
+          final user = snapshot.data;
+
+          if (user == null) {
+            return HomePage();  // If no user is logged in, show the HomePage
+          }
+
+          if (!user.emailVerified) {
+            return VerificationPage();  // If the user hasn't verified their email, show verification page
+          }
+
+          return Dashboard(guestMode: false);  // If the user is logged in and email verified, show Dashboard
+        }
+
+        return Scaffold(
+          body: Center(child: CircularProgressIndicator()),  // Loading state while checking auth
+        );
       },
     );
   }

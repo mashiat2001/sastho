@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       title: 'জরুরী চিকিৎসা সেবা',
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        scaffoldBackgroundColor: Colors.grey[100],
+        scaffoldBackgroundColor: Color(0xFFEFF3FF),
         fontFamily: 'SiyamRupali',
       ),
       home: const LocationTrackerPage(),
@@ -37,51 +37,53 @@ class _LocationTrackerPageState extends State<LocationTrackerPage> {
   double? latitude;
   double? longitude;
   String? address;
-  List<Map<String, dynamic>> doctors = [];
+  List<Map<String, dynamic>> hospitals = [];
   List<Map<String, dynamic>> ambulances = [];
   bool isLoading = true;
   String? errorMessage;
-  String? selectedDistrict;
+  String? selectedArea;
 
   Future<void> loadDataFromJson() async {
     try {
       final String response = await rootBundle.loadString('assets/doctor_ambulance.json');
       final Map<String, dynamic> data = json.decode(response) as Map<String, dynamic>;
 
-      setState(() {
-        if (selectedDistrict != null) {
-          final districtKey = data.keys.firstWhere(
-                (key) => key.toLowerCase().contains(selectedDistrict!.toLowerCase()),
-            orElse: () => '',
-          );
-
-          if (districtKey.isNotEmpty && data[districtKey] != null) {
-            final districtData = data[districtKey] as Map<String, dynamic>;
-
-            doctors = (districtData['doctors'] as List<dynamic>?)?.map((doctor) {
-              return {
-                'name': doctor['name'] as String? ?? 'ডাক্তার',
-                'department': doctor['department'] as String? ?? 'সাধারণ',
-                'contact': doctor['contact'] as String? ?? 'N/A',
-                'latitude': doctor['latitude'] as double? ?? 0.0,
-                'longitude': doctor['longitude'] as double? ?? 0.0,
-              };
-            }).toList() ?? [];
-
-            ambulances = (districtData['ambulances'] as List<dynamic>?)?.map((ambulance) {
-              return {
-                'name': ambulance['name'] as String? ?? 'অ্যাম্বুলেন্স',
-                'phone_number': ambulance['phone_number'] as String? ?? 'N/A',
-                'location': ambulance['location'] as String? ?? 'অজানা',
-                'latitude': ambulance['latitude'] as double? ?? 0.0,
-                'longitude': ambulance['longitude'] as double? ?? 0.0,
-              };
-            }).toList() ?? [];
-          } else {
-            doctors = [];
-            ambulances = [];
-          }
+      // Determine which area's data to show
+      String areaKey = 'default';
+      if (selectedArea != null) {
+        if (selectedArea!.toLowerCase().contains('kamalbazar')) {
+          areaKey = 'kamalbazar';
+        } else if (selectedArea!.toLowerCase().contains('sylhet')) {
+          areaKey = 'sylhet';
+        } else if (selectedArea!.toLowerCase().contains('moulvibazar')) {
+          areaKey = 'moulvibazar';
+        } else if (selectedArea!.toLowerCase().contains('sunamganj')) {
+          areaKey = 'sunamganj';
+        } else if (selectedArea!.toLowerCase().contains('habiganj')) {
+          areaKey = 'habiganj';
         }
+      }
+
+      setState(() {
+        hospitals = (data[areaKey]?['hospitals'] as List<dynamic>?)?.map((hospital) {
+          return {
+            'name': hospital['name'] as String? ?? 'হাসপাতাল',
+            'address': hospital['address'] as String? ?? 'ঠিকানা জানা নেই',
+            'contact': hospital['contact'] as String? ?? 'N/A',
+            'latitude': hospital['latitude'] as double? ?? 0.0,
+            'longitude': hospital['longitude'] as double? ?? 0.0,
+          };
+        }).toList() ?? [];
+
+        ambulances = (data[areaKey]?['ambulances'] as List<dynamic>?)?.map((ambulance) {
+          return {
+            'name': ambulance['name'] as String? ?? 'অ্যাম্বুলেন্স',
+            'phone_number': ambulance['phone_number'] as String? ?? 'N/A',
+            'location': ambulance['location'] as String? ?? 'অজানা',
+            'latitude': ambulance['latitude'] as double? ?? 0.0,
+            'longitude': ambulance['longitude'] as double? ?? 0.0,
+          };
+        }).toList() ?? [];
       });
     } catch (e) {
       setState(() {
@@ -146,16 +148,12 @@ class _LocationTrackerPageState extends State<LocationTrackerPage> {
             if (place.country != null) place.country,
           ].where((part) => part != null).join(', ');
 
-          if (place.administrativeArea?.toLowerCase().contains('sylhet') == true) {
-            selectedDistrict = 'sylhet_sadar';
-          } else if (place.administrativeArea?.toLowerCase().contains('moulvibazar') == true) {
-            selectedDistrict = 'moulvibazar';
-          } else if (place.administrativeArea?.toLowerCase().contains('sunamganj') == true) {
-            selectedDistrict = 'sunamganj';
-          } else if (place.administrativeArea?.toLowerCase().contains('habiganj') == true) {
-            selectedDistrict = 'habiganj';
+          // Special case for Kamalbazar
+          if (place.subLocality?.toLowerCase().contains('kamalbazar') == true ||
+              place.locality?.toLowerCase().contains('kamalbazar') == true) {
+            selectedArea = 'kamalbazar';
           } else {
-            selectedDistrict = place.administrativeArea?.toLowerCase();
+            selectedArea = place.administrativeArea;
           }
         });
       }
@@ -190,11 +188,13 @@ class _LocationTrackerPageState extends State<LocationTrackerPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const CircularProgressIndicator(),
-              const SizedBox(height: 20),
+              CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF2171B5)),
+              ),
+              SizedBox(height: 20),
               Text(
-                'ডেটা লোড হচ্ছে...',
-                style: TextStyle(fontSize: 16, fontFamily: 'Siyamrupali'),
+                'আপনার অবস্থান খুঁজে বের করা হচ্ছে...',
+                style: TextStyle(fontSize: 16, fontFamily: 'SiyamRupali'),
               ),
             ],
           ),
@@ -207,7 +207,7 @@ class _LocationTrackerPageState extends State<LocationTrackerPage> {
         body: Center(
           child: Text(
             'ত্রুটি: $errorMessage',
-            style: TextStyle(fontSize: 16, fontFamily: 'Siyamrupali'),
+            style: TextStyle(fontSize: 16, fontFamily: 'SiyamRupali'),
           ),
         ),
       );
@@ -215,15 +215,14 @@ class _LocationTrackerPageState extends State<LocationTrackerPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'জরুরী চিকিৎসা সেবা',
-          style: TextStyle(fontFamily: 'Siyamrupali'),
+          style: TextStyle(fontFamily: 'SiyamRupali'),
         ),
-        backgroundColor: Colors.blue[800],
-        elevation: 0,
+        backgroundColor: Color(0xFF2171B5),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -235,21 +234,21 @@ class _LocationTrackerPageState extends State<LocationTrackerPage> {
                 icon: Icons.location_on,
               ),
 
-            const Divider(thickness: 2, height: 40),
+            Divider(thickness: 2, height: 40),
 
-            _buildSectionHeader('নিকটবর্তী ডাক্তার'),
-            if (doctors.isEmpty)
-              _buildEmptyState('কোন ডাক্তার পাওয়া যায়নি')
+            _buildSectionHeader('নিকটবর্তী হাসপাতাল'),
+            if (hospitals.isEmpty)
+              _buildEmptyState('কোন হাসপাতাল পাওয়া যায়নি')
             else
-              ...doctors.map((doctor) => _buildServiceCard(
-                title: doctor['name'],
-                subtitle: doctor['department'],
-                phone: doctor['contact'],
-                icon: Icons.medical_services,
-                onTap: () => _makePhoneCall(doctor['contact']),
+              ...hospitals.map((hospital) => _buildServiceCard(
+                title: hospital['name'],
+                subtitle: hospital['address'],
+                phone: hospital['contact'],
+                icon: Icons.local_hospital,
+                onTap: () => _makePhoneCall(hospital['contact']),
               )),
 
-            const Divider(thickness: 2, height: 40),
+            Divider(thickness: 2, height: 40),
 
             _buildSectionHeader('নিকটবর্তী অ্যাম্বুলেন্স'),
             if (ambulances.isEmpty)
@@ -259,7 +258,7 @@ class _LocationTrackerPageState extends State<LocationTrackerPage> {
                 title: ambulance['name'],
                 subtitle: ambulance['location'],
                 phone: ambulance['phone_number'],
-                icon: Icons.local_hospital,
+                icon: Icons.airport_shuttle,
                 onTap: () => _makePhoneCall(ambulance['phone_number']),
               )),
           ],
@@ -270,14 +269,14 @@ class _LocationTrackerPageState extends State<LocationTrackerPage> {
 
   Widget _buildSectionHeader(String title) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
+      padding: EdgeInsets.only(bottom: 16),
       child: Text(
         title,
         style: TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.bold,
-          color: Colors.blue[800],
-          fontFamily: 'Siyamrupali',
+          color: Color(0xFF2171B5),
+          fontFamily: 'SiyamRupali',
         ),
       ),
     );
@@ -290,16 +289,16 @@ class _LocationTrackerPageState extends State<LocationTrackerPage> {
   }) {
     return Card(
       elevation: 2,
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: EdgeInsets.only(bottom: 16),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16),
         child: Row(
           children: [
-            Icon(icon, size: 28, color: Colors.blue[700]),
-            const SizedBox(width: 16),
+            Icon(icon, size: 28, color: Color(0xFF2171B5)),
+            SizedBox(width: 16),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -309,17 +308,17 @@ class _LocationTrackerPageState extends State<LocationTrackerPage> {
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: Colors.grey[800],
-                      fontFamily: 'Siyamrupali',
+                      color: Colors.black,
+                      fontFamily: 'SiyamRupali',
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4),
                   Text(
                     content,
                     style: TextStyle(
                       fontSize: 14,
-                      color: Colors.grey[600],
-                      fontFamily: 'Siyamrupali',
+                      color: Colors.grey[700],
+                      fontFamily: 'SiyamRupali',
                     ),
                   ),
                 ],
@@ -340,46 +339,51 @@ class _LocationTrackerPageState extends State<LocationTrackerPage> {
   }) {
     return Card(
       elevation: 2,
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: EdgeInsets.only(bottom: 12),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          children: [
-            Icon(icon, size: 28, color: Colors.red[700]),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey[800],
-                      fontFamily: 'Siyamrupali',
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: phone != 'N/A' ? onTap : null,
+        child: Padding(
+          padding: EdgeInsets.all(16),
+          child: Row(
+            children: [
+              Icon(icon, size: 28, color: Color(0xFF2171B5)),
+              SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                        fontFamily: 'SiyamRupali',
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    subtitle,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey[600],
-                      fontFamily: 'Siyamrupali',
+                    SizedBox(height: 4),
+                    Text(
+                      subtitle,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey[700],
+                        fontFamily: 'SiyamRupali',
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            IconButton(
-              icon: const Icon(Icons.phone, color: Colors.green),
-              onPressed: phone != 'N/A' ? onTap : null,
-            ),
-          ],
+              if (phone != 'N/A')
+                IconButton(
+                  icon: Icon(Icons.phone, color: Colors.green),
+                  onPressed: onTap,
+                ),
+            ],
+          ),
         ),
       ),
     );
@@ -387,14 +391,14 @@ class _LocationTrackerPageState extends State<LocationTrackerPage> {
 
   Widget _buildEmptyState(String message) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16),
+      padding: EdgeInsets.symmetric(vertical: 16),
       child: Center(
         child: Text(
           message,
           style: TextStyle(
             fontSize: 16,
-            color: Colors.grey[500],
-            fontFamily: 'Siyamrupali',
+            color: Colors.grey[600],
+            fontFamily: 'SiyamRupali',
           ),
         ),
       ),

@@ -1,8 +1,31 @@
 import 'package:flutter/material.dart';
 
-class BmiDietPage extends StatefulWidget {
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
-  _BmiDietPageState createState() => _BmiDietPageState();
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'BMI এবং ডায়েট পরামর্শ',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        scaffoldBackgroundColor: const Color(0xFFEFF3FF),
+        fontFamily: 'SiyamRupali',
+      ),
+      home: const BmiDietPage(),
+    );
+  }
+}
+
+class BmiDietPage extends StatefulWidget {
+  const BmiDietPage({super.key});
+
+  @override
+  State<BmiDietPage> createState() => _BmiDietPageState();
 }
 
 class _BmiDietPageState extends State<BmiDietPage> {
@@ -86,7 +109,7 @@ class _BmiDietPageState extends State<BmiDietPage> {
       _bmiResult = 'আপনার BMI: ${bmi.toStringAsFixed(2)}';
       _status = bmiStatus;
       _dietSuggestion = dietSuggestion;
-
+      _bmiRange = bmiRange;
     });
   }
 
@@ -94,12 +117,13 @@ class _BmiDietPageState extends State<BmiDietPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('BMI এবং ডায়েট পরামর্শ', style: TextStyle(fontFamily: 'SiyamRupali')),
-        backgroundColor: Colors.blue.shade800,
+        title: const Text('BMI এবং ডায়েট পরামর্শ',
+            style: TextStyle(fontFamily: 'SiyamRupali')),
+        backgroundColor: const Color(0xFF2171B5),
         elevation: 0,
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -109,11 +133,11 @@ class _BmiDietPageState extends State<BmiDietPage> {
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Padding(
-                padding: EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       'BMI কি?',
                       style: TextStyle(
                         fontSize: 18,
@@ -121,8 +145,8 @@ class _BmiDietPageState extends State<BmiDietPage> {
                         fontFamily: 'SiyamRupali',
                       ),
                     ),
-                    SizedBox(height: 8),
-                    Text(
+                    const SizedBox(height: 8),
+                    const Text(
                       'বডি মাস ইনডেক্স (BMI) হলো আপনার ওজন এবং উচ্চতার অনুপাত যা শরীরের চর্বির পরিমাণ নির্দেশ করে। এটি স্বাস্থ্য ঝুঁকি মূল্যায়নের একটি সহজ পদ্ধতি।',
                       style: TextStyle(fontSize: 16, fontFamily: 'SiyamRupali'),
                     ),
@@ -130,43 +154,45 @@ class _BmiDietPageState extends State<BmiDietPage> {
                 ),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
 
             // Input Section
             _buildInputCard(
               title: 'আপনার তথ্য দিন',
               children: [
                 _buildInputField('ওজন (কেজি)', _weightController),
-                SizedBox(height: 10),
-                Text('উচ্চতা', style: TextStyle(fontSize: 16, fontFamily: 'SiyamRupali')),
+                const SizedBox(height: 10),
+                const Text('উচ্চতা',
+                    style: TextStyle(fontSize: 16, fontFamily: 'SiyamRupali')),
                 Row(
                   children: [
                     Expanded(child: _buildInputField('ফুট', _feetController)),
-                    SizedBox(width: 10),
+                    const SizedBox(width: 10),
                     Expanded(child: _buildInputField('ইঞ্চি', _inchController)),
                   ],
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 _buildInputField('বয়স (বছর)', _ageController),
               ],
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
 
             Center(
               child: ElevatedButton(
                 onPressed: calculateBmi,
-                child: Text("BMI গণনা করুন", style: TextStyle(fontFamily: 'SiyamRupali')),
+                child: const Text("BMI গণনা করুন",
+                    style: TextStyle(fontFamily: 'SiyamRupali')),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue.shade800,
+                  backgroundColor: const Color(0xFF2171B5),
                   foregroundColor: Colors.white,
-                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
                 ),
               ),
             ),
-            SizedBox(height: 30),
+            const SizedBox(height: 30),
 
             // Results Section
             if (_bmiResult != null && _bmiResult!.isNotEmpty)
@@ -175,9 +201,10 @@ class _BmiDietPageState extends State<BmiDietPage> {
                 children: [
                   _buildResultItem('BMI স্কোর', _bmiResult!),
                   _buildResultItem('ওজন অবস্থা', _status!),
+                  _buildResultItem('BMI রেঞ্জ', _bmiRange!),
 
-                  SizedBox(height: 15),
-                  Text(
+                  const SizedBox(height: 15),
+                  const Text(
                     'ডায়েট পরামর্শ:',
                     style: TextStyle(
                       fontSize: 18,
@@ -185,15 +212,15 @@ class _BmiDietPageState extends State<BmiDietPage> {
                       fontFamily: 'SiyamRupali',
                     ),
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   Text(
                     _dietSuggestion!,
-                    style: TextStyle(fontSize: 16, fontFamily: 'SiyamRupali'),
+                    style: const TextStyle(fontSize: 16, fontFamily: 'SiyamRupali'),
                   ),
                 ],
               ),
 
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             _buildBmiChart(),
           ],
         ),
@@ -208,19 +235,19 @@ class _BmiDietPageState extends State<BmiDietPage> {
         borderRadius: BorderRadius.circular(12),
       ),
       child: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               title,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
                 fontFamily: 'SiyamRupali',
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             ...children,
           ],
         ),
@@ -234,8 +261,8 @@ class _BmiDietPageState extends State<BmiDietPage> {
       keyboardType: TextInputType.number,
       decoration: InputDecoration(
         hintText: hint,
-        border: OutlineInputBorder(),
-        contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+        border: const OutlineInputBorder(),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
       ),
     );
   }
@@ -246,21 +273,21 @@ class _BmiDietPageState extends State<BmiDietPage> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
-      color: Colors.blue.shade50,
+      color: const Color(0xFFE3F2FD),
       child: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               title,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
                 fontFamily: 'SiyamRupali',
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             ...children,
           ],
         ),
@@ -270,12 +297,12 @@ class _BmiDietPageState extends State<BmiDietPage> {
 
   Widget _buildResultItem(String label, String value) {
     return Padding(
-      padding: EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.only(bottom: 8),
       child: Row(
         children: [
           Text(
             '$label: ',
-            style: TextStyle(
+            style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 16,
               fontFamily: 'SiyamRupali',
@@ -283,7 +310,7 @@ class _BmiDietPageState extends State<BmiDietPage> {
           ),
           Text(
             value,
-            style: TextStyle(fontSize: 16, fontFamily: 'SiyamRupali'),
+            style: const TextStyle(fontSize: 16, fontFamily: 'SiyamRupali'),
           ),
         ],
       ),
@@ -297,11 +324,11 @@ class _BmiDietPageState extends State<BmiDietPage> {
         borderRadius: BorderRadius.circular(12),
       ),
       child: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'BMI চার্ট',
               style: TextStyle(
                 fontSize: 18,
@@ -309,11 +336,11 @@ class _BmiDietPageState extends State<BmiDietPage> {
                 fontFamily: 'SiyamRupali',
               ),
             ),
-            SizedBox(height: 10),
-            _buildBmiCategory('১৮.৫ এর নিচে', 'অধিক কম ওজন', Colors.blue),
-            _buildBmiCategory('১৮.৫ - ২৪.৯', 'স্বাভাবিক ওজন', Colors.green),
-            _buildBmiCategory('২৫ - ২৯.৯', 'অতিরিক্ত ওজন', Colors.orange),
-            _buildBmiCategory('৩০ এর উপরে', 'মোটা', Colors.red),
+            const SizedBox(height: 10),
+            _buildBmiCategory('১৮.৫ এর নিচে', 'অধিক কম ওজন', const Color(0xFF42A5F5)),
+            _buildBmiCategory('১৮.৫ - ২৪.৯', 'স্বাভাবিক ওজন', const Color(0xFF66BB6A)),
+            _buildBmiCategory('২৫ - ২৯.৯', 'অতিরিক্ত ওজন', const Color(0xFFFFA726)),
+            _buildBmiCategory('৩০ এর উপরে', 'মোটা', const Color(0xFFEF5350)),
           ],
         ),
       ),
@@ -322,7 +349,7 @@ class _BmiDietPageState extends State<BmiDietPage> {
 
   Widget _buildBmiCategory(String range, String category, Color color) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 6),
+      padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
         children: [
           Container(
@@ -333,10 +360,10 @@ class _BmiDietPageState extends State<BmiDietPage> {
               shape: BoxShape.circle,
             ),
           ),
-          SizedBox(width: 10),
+          const SizedBox(width: 10),
           Text(
             '$range - $category',
-            style: TextStyle(fontSize: 16, fontFamily: 'SiyamRupali'),
+            style: const TextStyle(fontSize: 16, fontFamily: 'SiyamRupali'),
           ),
         ],
       ),

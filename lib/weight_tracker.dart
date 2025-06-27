@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class WeightTrackerPage extends StatefulWidget {
   @override
@@ -13,6 +14,35 @@ class _WeightTrackerPageState extends State<WeightTrackerPage> {
   String _advice = "";
   IconData _statusIcon = Icons.check_circle_outline;
   Color _statusColor = Colors.green;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSavedWeights();
+  }
+
+  @override
+  void dispose() {
+    _prePregnancyWeightController.dispose();
+    _currentWeightController.dispose();
+    super.dispose();
+  }
+
+  // Load saved weights from SharedPreferences
+  Future<void> _loadSavedWeights() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _prePregnancyWeightController.text = prefs.getString('prePregnancyWeight') ?? '';
+      _currentWeightController.text = prefs.getString('currentWeight') ?? '';
+    });
+  }
+
+  // Save weights to SharedPreferences
+  Future<void> _saveWeights() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('prePregnancyWeight', _prePregnancyWeightController.text);
+    await prefs.setString('currentWeight', _currentWeightController.text);
+  }
 
   // Function to calculate weight gain and provide advice
   void calculateWeightStatus() {
@@ -56,6 +86,9 @@ class _WeightTrackerPageState extends State<WeightTrackerPage> {
         _statusColor = Colors.red;
       }
     });
+
+    // Save the weights after calculation
+    _saveWeights();
   }
 
   @override
@@ -93,6 +126,7 @@ class _WeightTrackerPageState extends State<WeightTrackerPage> {
                 hintText: "আপনার পূর্ববর্তী ওজন দিন",
                 labelText: "প্রেগন্যান্সির আগে ওজন",
               ),
+              onChanged: (value) => _saveWeights(),
             ),
             SizedBox(height: 20),
 
@@ -108,6 +142,7 @@ class _WeightTrackerPageState extends State<WeightTrackerPage> {
                 hintText: "বর্তমান ওজন দিন",
                 labelText: "বর্তমান ওজন",
               ),
+              onChanged: (value) => _saveWeights(),
             ),
             SizedBox(height: 20),
 
