@@ -3,8 +3,15 @@ import 'colors.dart';
 
 class FavoriteFeaturesPage extends StatelessWidget {
   final List<Map<String, dynamic>> favoriteFeatures;
+  final Function(String) onFeatureTap;
+  final Function(String) onToggleFavorite;
 
-  const FavoriteFeaturesPage({Key? key, required this.favoriteFeatures}) : super(key: key);
+  const FavoriteFeaturesPage({
+    Key? key,
+    required this.favoriteFeatures,
+    required this.onFeatureTap,
+    required this.onToggleFavorite,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,15 +39,14 @@ class FavoriteFeaturesPage extends StatelessWidget {
   }
 
   Widget _buildFeatureCard(int index) {
+    final feature = favoriteFeatures[index];
     return Card(
       elevation: 5,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       color: AppColors.accentColor,
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
-        onTap: () {
-          // Navigation would be handled by the parent widget
-        },
+        onTap: () => onFeatureTap(feature['route']),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
           child: Column(
@@ -48,7 +54,7 @@ class FavoriteFeaturesPage extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(12),
                 child: Image.asset(
-                  favoriteFeatures[index]['image'],
+                  feature['image'],
                   width: double.infinity,
                   height: 150,
                   fit: BoxFit.cover,
@@ -56,7 +62,7 @@ class FavoriteFeaturesPage extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               Text(
-                favoriteFeatures[index]['title'],
+                feature['title'],
                 style: const TextStyle(
                   fontSize: 18,
                   color: AppColors.textColor,
@@ -66,12 +72,10 @@ class FavoriteFeaturesPage extends StatelessWidget {
               const SizedBox(height: 10),
               IconButton(
                 icon: Icon(
-                  favoriteFeatures[index]['isFavorite'] ? Icons.star : Icons.star_border,
-                  color: favoriteFeatures[index]['isFavorite'] ? Colors.amber : Colors.grey,
+                  feature['isFavorite'] ? Icons.star : Icons.star_border,
+                  color: feature['isFavorite'] ? Colors.amber : Colors.grey,
                 ),
-                onPressed: () {
-                  // Favorite toggle would be handled by the parent widget
-                },
+                onPressed: () => onToggleFavorite(feature['title']),
               ),
             ],
           ),

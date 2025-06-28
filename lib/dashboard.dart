@@ -3,8 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'favorite.dart';
 import 'colors.dart';
-import 'login.dart'; // Make sure to import your login page
+import 'login.dart';
 import 'verification.dart';
+
 class Dashboard extends StatefulWidget {
   final bool guestMode;
   const Dashboard({Key? key, required this.guestMode}) : super(key: key);
@@ -52,8 +53,7 @@ class _DashboardState extends State<Dashboard> {
 
   Future<void> _checkAuthState() async {
     final user = _auth.currentUser;
-    if (user == null) {
-      // If user is not logged in, redirect to login
+    if (user == null && !widget.guestMode) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Navigator.pushReplacement(
           context,
@@ -63,33 +63,38 @@ class _DashboardState extends State<Dashboard> {
       return;
     }
 
-    if (!user.emailVerified && !widget.guestMode) {
-      // If email is not verified, redirect to verification page
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => VerificationPage()),
-        );
-      });
+    if (user != null && !user.emailVerified && !widget.guestMode) {
+      await user.reload();
+      final refreshedUser = _auth.currentUser;
+      if (refreshedUser != null && !refreshedUser.emailVerified) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => VerificationPage()),
+          );
+        });
+      }
     }
   }
 
   Future<void> getUserData() async {
     try {
       final user = _auth.currentUser;
-      if (user == null) return;
+      if (user == null && !widget.guestMode) return;
 
-      final snapshot = await _userRef.child(user.uid).get();
-      if (snapshot.exists) {
-        final data = snapshot.value as Map;
-        setState(() {
-          username = data['username'] ?? 'ব্যবহারকারী';
-          List<String> userFavorites = List<String>.from(data['favorites'] ?? []);
-          for (var feature in features) {
-            feature['isFavorite'] = userFavorites.contains(feature['title']);
-          }
-          filteredFeatures = List.from(features);
-        });
+      if (!widget.guestMode) {
+        final snapshot = await _userRef.child(user!.uid).get();
+        if (snapshot.exists) {
+          final data = snapshot.value as Map;
+          setState(() {
+            username = data['username'] ?? 'ব্যবহারকারী';
+            List<String> userFavorites = List<String>.from(data['favorites'] ?? []);
+            for (var feature in features) {
+              feature['isFavorite'] = userFavorites.contains(feature['title']);
+            }
+            filteredFeatures = List.from(features);
+          });
+        }
       }
     } catch (error) {
       print('Error fetching user data: $error');
@@ -132,20 +137,15 @@ class _DashboardState extends State<Dashboard> {
     return StreamBuilder<User?>(
       stream: _authStateChanges,
       builder: (context, snapshot) {
-        // Handle auth state changes
         if (snapshot.connectionState == ConnectionState.active) {
           if (snapshot.data == null && !widget.guestMode) {
-            // User signed out, redirect to login
             WidgetsBinding.instance.addPostFrameCallback((_) {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => LoginPage()),
               );
             });
-          } else if (snapshot.data != null &&
-              !snapshot.data!.emailVerified &&
-              !widget.guestMode) {
-            // Email not verified, redirect to verification
+          } else if (snapshot.data != null && !snapshot.data!.emailVerified && !widget.guestMode) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               Navigator.pushReplacement(
                 context,
@@ -184,7 +184,7 @@ class _DashboardState extends State<Dashboard> {
         children: [
           UserAccountsDrawerHeader(
             accountName: Text(widget.guestMode ? 'অতিথি ব্যবহারকারী' : username),
-            accountEmail: null,
+            accountEmail: widget.guestMode ? null : Text(_auth.currentUser?.email ?? ''),
             currentAccountPicture: const CircleAvatar(
               backgroundColor: Colors.white,
               child: Icon(Icons.person, size: 40, color: AppColors.primaryColor),
@@ -200,7 +200,7 @@ class _DashboardState extends State<Dashboard> {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
-                  color: Colors.red,
+                  color: Colors.black,
                 ),
               ),
             ),
@@ -338,6 +338,26 @@ class _DashboardState extends State<Dashboard> {
       MaterialPageRoute(
         builder: (context) => FavoriteFeaturesPage(
           favoriteFeatures: features.where((f) => f['isFavorite']).toList(),
+          onFeatureTap: (route) => Navigator.pushNamed(context, route),
+          onToggleFavorite: (title) {
+            setState(() {
+              final index = features.indexWhere((f) => f['title'] == title);
+              if (index != -1) {
+                features[index]['isFavorite'] = !features[index]['isFavorite'];
+              }
+            });
+
+            if (!widget.guestMode) {
+              final user = _auth.currentUser;
+              if (user != null) {
+                final updatedFavorites = features
+                    .where((feature) => feature['isFavorite'])
+                    .map((feature) => feature['title'])
+                    .toList();
+                _userRef.child(user.uid).update({'favorites': updatedFavorites});
+              }
+            }
+          },
         ),
       ),
     );

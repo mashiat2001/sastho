@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dashboard.dart';
 import 'colors.dart';
 
 class HomePage extends StatelessWidget {
@@ -34,48 +35,49 @@ class HomePage extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: 40),
-              // Login Button
               ElevatedButton(
                 onPressed: () => Navigator.pushNamed(context, '/login'),
                 child: Text("লগইন"),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primaryColor, // Button color
+                  backgroundColor: AppColors.primaryColor,
                   minimumSize: Size(double.infinity, 50),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
-                  foregroundColor: Colors.white, // Button text color
+                  foregroundColor: Colors.white,
                 ),
               ),
               SizedBox(height: 20),
-              // Register Button
               ElevatedButton(
-                onPressed: () {
-                  print("Navigating to register"); // Debug
-                  Navigator.pushNamed(context, '/registration');
-                },
+                onPressed: () => Navigator.pushNamed(context, '/registration'),
                 child: Text("একটি অ্যাকাউন্ট তৈরি করুন"),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primaryColor, // Button color
+                  backgroundColor: AppColors.primaryColor,
                   minimumSize: Size(double.infinity, 50),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
-                  foregroundColor: Colors.white, // Button text color
+                  foregroundColor: Colors.white,
                 ),
               ),
               SizedBox(height: 20),
-              // Guest Mode Button - Navigate to Dashboard with guestMode = true
               ElevatedButton(
-                onPressed: () => Navigator.pushNamed(context, '/dashboard', arguments: {'guestMode': true}),
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Dashboard(guestMode: true),
+                    ),
+                  );
+                },
                 child: Text("অফলাইন মোডে প্রবেশ করুন"),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primaryColor, // Lighter blue button for guest
+                  backgroundColor: AppColors.primaryColor,
                   minimumSize: Size(double.infinity, 50),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
-                  foregroundColor: Colors.white, // Button text color
+                  foregroundColor: Colors.white,
                 ),
               ),
             ],

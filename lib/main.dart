@@ -3,13 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:health_buddy/faq.dart';
-import 'package:health_buddy/health_journal.dart';
-import 'package:health_buddy/labor.dart';
-import 'package:health_buddy/week_tracker.dart';
-import 'package:health_buddy/weight_tracker.dart';
 
-// Import all pages
 import 'homepage.dart';
 import 'login.dart';
 import 'dashboard.dart';
@@ -26,18 +20,19 @@ import 'mental_health_checkin.dart';
 import 'breathing.dart';
 import 'mood_journal.dart';
 import 'tips.dart';
+import 'faq.dart';
+import 'health_journal.dart';
+import 'week_tracker.dart';
+import 'weight_tracker.dart';
+import 'labor.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Initialize Firebase
   await Firebase.initializeApp();
 
-  // Configure Database
   FirebaseDatabase.instance.setPersistenceEnabled(true);
   FirebaseDatabase.instance.setPersistenceCacheSizeBytes(10000000);
 
-  // Initialize Notifications
   await AwesomeNotifications().initialize(
     null,
     [
@@ -69,7 +64,16 @@ class HealthBuddyApp extends StatelessWidget {
         '/home': (context) => HomePage(),
         '/login': (context) => LoginPage(),
         '/registration': (context) => RegistrationPage(),
-        '/dashboard': (context) => Dashboard(guestMode: false),
+       '/dashboard': (context) {
+         final args = ModalRoute
+             .of(context)
+             ?.settings
+             .arguments;
+         final guestMode = args is Map
+             ? args['guestMode'] as bool? ?? false
+             : false;
+         return Dashboard(guestMode: guestMode);
+       },
         '/profile': (context) => ProfilePage(),
         '/verification': (context) => VerificationPage(),
         '/first_aid': (context) => FirstAidPage(),
@@ -82,12 +86,11 @@ class HealthBuddyApp extends StatelessWidget {
         '/breathing': (context) => BreathingExercise(),
         '/mood_journal': (context) => MentalHealthKnowledge(),
         '/tips': (context) => MentalHealthTips(),
-        '/weight_tracker':(context) => WeightTrackerPage(),
-        '/faq':(context) => PregnancyFAQPage(),
+        '/weight_tracker': (context) => WeightTrackerPage(),
+        '/faq': (context) => PregnancyFAQPage(),
         '/week_tracker': (context) => WeekTrackerPage(),
-        '/health_journal':(context) => HealthJournalPage(),
-        '/labor':(context) =>  LaborPreparationPage(),
-
+        '/health_journal': (context) => HealthJournalPage(),
+        '/labor': (context) => LaborPreparationPage(),
       },
     );
   }
@@ -96,25 +99,25 @@ class HealthBuddyApp extends StatelessWidget {
 class AuthWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<User?>( // Listen to Firebase Authentication stream
+    return StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.active) {
           final user = snapshot.data;
 
           if (user == null) {
-            return HomePage();  // If no user is logged in, show the HomePage
+            return HomePage();
           }
 
           if (!user.emailVerified) {
-            return VerificationPage();  // If the user hasn't verified their email, show verification page
+            return VerificationPage();
           }
 
-          return Dashboard(guestMode: false);  // If the user is logged in and email verified, show Dashboard
+          return Dashboard(guestMode: false);
         }
 
         return Scaffold(
-          body: Center(child: CircularProgressIndicator()),  // Loading state while checking auth
+          body: Center(child: CircularProgressIndicator()),
         );
       },
     );
